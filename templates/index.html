@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bus Route Optimization</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <style>
+    
+  body{
+    
+    background: linear-gradient(45deg, #ff9933, #5cf1a7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    
+  }
+  h1{
+    background: linear-gradient(to right, #fcb045, #fd1d1d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  }
+  h2{
+    background: linear-gradient(to right, #f5ba67, #f85a5a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  }
+       #start {
+            width: 50%;
+        }
+         #goal
+         {
+            width: 50%;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 0;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover{
+            background-color: #4e00b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bus Route Optimization</h1>
+    
+    <form action="/shortest_path" method="POST">
+        
+        <label for="start">Start:</label>
+        <select id="start" name="start">
+            {% for bus_stop in bus_stops %}
+                <option value="{{ bus_stop }}">{{ bus_stop }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="goal">Goal:</label>
+        <select id="goal" name="goal">
+            {% for bus_stop in bus_stops %}
+                <option value="{{ bus_stop }}">{{ bus_stop }}</option>
+            {% endfor %}
+        </select>
+        
+        <input type="submit" value="Find Shortest Path" class="btn">
+    
+    </form>
+    
+    <div id="graph">
+        <script type="text/javascript">
+            // Generate the graph using vis.js
+            var nodes = new vis.DataSet([
+                { id: A, label: "A" },
+                { id: B, label: "B" },
+                { id: C, label: "C" },
+                { id: D, label: "D" },
+                { id: E, label: "E" },
+                { id: F, label: "F" },
+                { id: G, label: "G" },
+                { id: H, label: "H" }
+            ]);
+        
+            var edges = new vis.DataSet([
+                { from: A, to: H, arrows: "to", dashes: true },
+                { from: A, to: C, arrows: "to" },
+                { from: A, to: B, arrows: "to, from" },
+                { from: B, to: D, arrows: "to, middle" },
+                { from: B, to: E, arrows: "to, middle, from" },
+                { from: E, to: F, arrows: { to: { scaleFactor: 2 } } },
+                { from: F, to: G, arrows: { middle: { scaleFactor: 0.5 }, from: true } }
+            ]);
+        
+            var container = document.getElementById('graph');
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+            var options = {};
+            var network = new vis.Network(container, data, options);
+        </script>
+        
+    </div>
+    
+    <div id="shortest-path">
+        {% if shortest_path %}
+            <h2>Shortest Path:</h2>
+            <p>{{ shortest_path }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
